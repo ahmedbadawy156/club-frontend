@@ -1,0 +1,12 @@
+{
+  "name": "club-frontend",
+  "private": true,
+  "description": "Campus Club Management frontend (static HTML, CSS, JavaScript)",
+  "scripts": {
+    "dev": "http-server . -a 127.0.0.1 -p 5500 -c-1",
+    "config:local": "node scripts/make-local-config.mjs"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
