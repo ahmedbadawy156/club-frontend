@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:54321 https://*.supabase.co; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:,">
+  <title>Members · Campus Club</title>
+  <link rel="stylesheet" href="../shared/styles.css">
+  <script type="module" src="members.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Members</h1>
+    <p class="lead">Search members and change roles. The club always keeps at least one officer.</p>
+
+    <div class="toolbar">
+      <form id="search-form" role="search">
+        <label>
+          Name or email
+          <input type="search" name="search" maxlength="100" autocomplete="off">
+        </label>
+        <label>
+          Status
+          <select name="status">
+            <option value="active">Active members</option>
+            <option value="inactive">Not approved</option>
+            <option value="all">Everyone</option>
+          </select>
+        </label>
+        <button class="button" type="submit">Search</button>
+      </form>
+    </div>
+
+    <div id="message"></div>
+    <div class="table-wrap" id="list"></div>
+    <div class="pager" id="pager"></div>
+  </main>
+</body>
+</html>

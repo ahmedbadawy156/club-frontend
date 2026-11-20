@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:54321 https://*.supabase.co; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:,">
+  <title>Campus Club</title>
+  <link rel="stylesheet" href="shared/styles.css">
+  <script type="module" src="home.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Campus Club</h1>
+    <p class="lead" id="greeting">Membership, events and announcements for the club in one place.</p>
+    <div id="notice"></div>
+
+    <div class="cards" id="cards"></div>
+
+    <p class="service-status" id="service-status"></p>
+  </main>
+</body>
+</html>
