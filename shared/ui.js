@@ -56,6 +56,22 @@ export function errorText(err, overrides = {}) {
   return "Something went wrong. Please try again.";
 }
 
+// For pages behind sign-in: send the user away when the server says the
+// session is gone (401) or the role is not enough (403 officer_only).
+// Returns true if it redirected.
+export function redirectOnAuthError(err) {
+  if (err?.status === 401) {
+    const next = encodeURIComponent(location.pathname + location.search);
+    location.assign(pageUrl(`membership/login.html?next=${next}`));
+    return true;
+  }
+  if (err?.status === 403 && err.code === "officer_only") {
+    location.assign(pageUrl("index.html?notice=not_allowed"));
+    return true;
+  }
+  return false;
+}
+
 export function formatDate(value) {
   if (!value) return "";
   const date = new Date(value);
