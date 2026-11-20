@@ -69,6 +69,15 @@ export function saveLogin(login) {
   return session;
 }
 
+// Update the role shown for this session (for example after an officer
+// demotes themself). The next token refresh confirms it from the server.
+export function setSessionRole(role) {
+  const session = getSession();
+  if (!session) return;
+  session.user.role = role;
+  storeSession(session);
+}
+
 // ---------- refresh ----------
 
 let refreshing = null; // one refresh at a time (refresh tokens rotate)
