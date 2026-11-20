@@ -20,6 +20,9 @@
 
 * { box-sizing: border-box; }
 
+/* Keep the hidden attribute working even on elements styled with display. */
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   font-family: var(--font);
