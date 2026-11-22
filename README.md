@@ -2,7 +2,8 @@
 
 Browser frontend for Team 10's Campus Club Management project
 (Cloud Computing and Cloud Security, 26CSCN29H). Plain HTML, CSS and
-JavaScript with `fetch`; no frameworks or third-party scripts.
+JavaScript with `fetch`; no frameworks or third-party scripts. Hosted as a
+static site in an **Amazon S3 bucket on Floci** (a local AWS emulator).
 
 It calls three backend services, each in its own repository:
 
@@ -15,9 +16,9 @@ It calls three backend services, each in its own repository:
 Each member commits only the pages in their own folder. Changes to
 `shared/` are reviewed by the team because every page uses it.
 
-> **Status:** runs locally against the local Membership service. Events
-> and Announcements are placeholder pages. Nothing is deployed; GitHub
-> Pages hosting and Supabase are proposals pending TA approval.
+> **Status:** works on Floci against the Membership service (Express on
+> Lambda behind API Gateway). Events and Announcements are placeholder pages.
+> Nothing is deployed to real AWS.
 
 ## Pages
 
@@ -36,8 +37,8 @@ Each member commits only the pages in their own folder. Changes to
 
 | File | Use it for |
 |---|---|
-| `config.js` | Each service's API address and publishable key (`config.events.apiUrl`, ...) |
-| `api.js` | `api(service, path, { method, body, query, auth })`: adds the key and token, throws `ApiError` with the server's `code` |
+| `config.js` | Each service's API address (`config.events.apiUrl`, ...). No keys of any kind |
+| `api.js` | `api(service, path, { method, body, query, auth })`: adds the login token, throws `ApiError` with the server's `code` and `retryAfter` |
 | `auth.js` | `getSession()`, `requireRole(["officer"])`, `getAccessToken()`, `signOut()`, `pageUrl()` |
 | `ui.js` | `el()` to build elements safely, `showMessage()`, `errorText()`, `redirectOnAuthError()`, `renderHeader()` |
 | `styles.css` | Shared look: cards, forms, tables, tabs, messages |
@@ -61,57 +62,58 @@ if (session) {
 }
 ```
 
-The access token comes from the Membership login. Its role is in
-`app_metadata.role` (`member` or `officer`), and it lasts 15 minutes;
-`auth.js` refreshes it automatically.
+### Tokens
+
+The Membership login returns a 15-minute RS256 token. Its role is in the
+`role` claim (`member` or `officer`), the user id in `sub`, issuer
+`club-membership`, audience `campus-club`. There is no refresh token: when it
+expires, the user signs in again. Other services verify it with the public
+key from `GET /api/auth/public-key` on the Membership API.
 
 ## Rules every page follows
 
 These are part of the security design (threat model, threats 3, 4 and 7).
 
-1. **Show user text only with `textContent`** (use `el()`), never
-   `innerHTML`.
+1. **Show user text only with `textContent`** (use `el()`), never `innerHTML`.
 2. **No inline scripts or styles.** Each page loads one module file and
    carries the same `Content-Security-Policy` meta tag (copy it from an
-   existing page). Add a new API origin to `connect-src` when a hosted
-   service exists.
-3. **Only publishable keys** in this repository. Never a secret key.
+   existing page). It allows API calls only to
+   `http://*.execute-api.localhost.floci.io:4566`.
+3. **No keys or secrets** in this repository or the bucket.
 4. **Role checks in pages are for display only.** Every permission is
    enforced by the backend; pages handle 401 and 403 with
    `redirectOnAuthError()`.
 
-## Run locally
+## Deploy to Floci
 
-Requirements: Node.js, and the Membership service running locally (see
-its README). In PowerShell use `npm.cmd` if script execution is blocked.
+Requirements: Node.js, the AWS CLI with the `floci` profile, and the
+Membership service deployed on Floci (`bash infra/deploy.sh` in
+`club-membership-service`). In PowerShell use `npm.cmd` if script execution
+is blocked.
 
 ```
-npm install
-npm run config:local
-npm run dev
+npm run deploy
 ```
 
-Then open http://127.0.0.1:5500.
+Then open http://localhost:4566/club-web/index.html (use `localhost`, not
+`127.0.0.1`: the API only allows the origin `http://localhost:4566`).
 
-- `npm run config:local` reads the running Membership stack (from
-  `../club-membership-service`) and writes `shared/config.local.js`,
-  which Git ignores. Run it again after restarting the stack.
-- `npm run dev` serves the site on `127.0.0.1:5500` only. That address
-  must be listed in the Membership service's `FRONTEND_ORIGINS`.
-- When the Events and Announcements stacks exist, add their addresses and
-  publishable keys to `scripts/make-local-config.mjs`.
+`npm run deploy` generates `shared/config.local.js` from the Membership
+deployment (Git ignores it, because each Floci deployment has its own API
+id), creates the bucket `club-web` if needed, and uploads only the HTML, CSS
+and JS files with the right content types.
 
-## Hosted configuration (later)
-
-Once hosted projects are approved and created, fill in `HOSTED` in
-`shared/config.js` with each service's URL and publishable key, add the
-GitHub Pages origin to each service's `FRONTEND_ORIGINS`, and publish the
-site with GitHub Pages.
+When the Events and Announcements services are deployed, add their API
+addresses in `scripts/make-local-config.mjs`, their routes' CORS must allow
+`http://localhost:4566`, and the pages' CSP already allows their API Gateway
+addresses on Floci.
 
 ## Known limits
 
-- Tokens are kept in `sessionStorage`, which any script on the page can
-  read. The strict CSP and `textContent` rule are the defence against
-  script injection.
-- Account lockout and rate limits are enforced by the Membership service;
-  the pages only show its messages.
+- Tokens are kept in `sessionStorage`, which any script on the page could
+  read. The strict CSP and the `textContent` rule are the defence.
+- Every bucket and Floci Dash share the origin `http://localhost:4566` on
+  Floci, so the API's CORS rule cannot tell them apart. On real AWS each
+  website bucket has its own address.
+- A token cannot be revoked before it expires; signing out forgets it in
+  the tab, and it expires within 15 minutes.

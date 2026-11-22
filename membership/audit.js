@@ -23,15 +23,15 @@ function details(entry) {
   switch (entry.eventType) {
     case "role_changed":
       if (m.reason === "bootstrap") return "First officer created";
-      return m.old_role && m.new_role ? `${m.old_role} → ${m.new_role}` : "";
+      return m.oldRole && m.newRole ? `${m.oldRole} → ${m.newRole}` : "";
     case "account_locked":
-      return m.locked_until ? `Locked until ${formatDate(m.locked_until)}` : "";
+      return m.lockedUntil ? `Locked until ${formatDate(m.lockedUntil)}` : "";
     default:
       return "";
   }
 }
 
-const person = (p) => (p ? p.fullName : "System");
+const person = (p) => (p ? (p.fullName ?? "Removed member") : "System");
 
 if (session) {
   renderHeader();
@@ -77,7 +77,7 @@ if (session) {
           el("td", { text: formatDate(e.createdAt) }),
           el("td", { text: EVENT_LABELS[e.eventType] ?? e.eventType }),
           el("td", { text: person(e.actor) }),
-          el("td", { text: e.target ? e.target.fullName : "" }),
+          el("td", { text: e.target ? (e.target.fullName ?? "Removed member") : (e.metadata?.applicantName ?? "") }),
           el("td", { text: details(e) }),
         ]));
       }

@@ -2,8 +2,8 @@
 //
 //   const data = await api("membership", "/members", { query: { search } });
 //
-// Adds the service's publishable key, and the access token unless
-// { auth: false }. Throws ApiError for non-2xx responses.
+// Adds the access token unless { auth: false }. Throws ApiError for non-2xx
+// responses. The site holds no API keys.
 
 import { config, isConfigured } from "./config.js";
 import { clearSession, getAccessToken } from "./auth.js";
@@ -26,7 +26,7 @@ export async function api(service, path, options = {}) {
   if (!isConfigured(service)) {
     throw new ApiError(0, "service_not_configured", null, null);
   }
-  const { apiUrl, publishableKey } = config[service];
+  const { apiUrl } = config[service];
 
   const url = new URL(apiUrl + path);
   for (const [key, value] of Object.entries(query ?? {})) {
@@ -35,7 +35,7 @@ export async function api(service, path, options = {}) {
     }
   }
 
-  const headers = { apikey: publishableKey };
+  const headers = {};
   if (body !== undefined) headers["Content-Type"] = "application/json";
   if (auth) {
     const token = await getAccessToken();

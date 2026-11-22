@@ -27,7 +27,7 @@ function minutes(seconds) {
 function loginErrorText(err) {
   switch (err.code) {
     case "invalid_credentials":
-      return "Email or password is incorrect. If your membership request is still pending, you cannot sign in yet.";
+      return "Email or password is incorrect. If your membership request is still waiting for review, you cannot sign in yet.";
     case "account_locked":
       return `This account is locked after too many failed attempts. Try again in ${minutes(err.retryAfter ?? 900)}.`;
     case "rate_limited":

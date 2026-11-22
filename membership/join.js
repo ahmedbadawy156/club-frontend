@@ -85,6 +85,9 @@ form.addEventListener("submit", async (event) => {
     } else if (err.code === "email_already_registered") {
       showMessage(message, "error",
         "This email already has an account or a request waiting for review.");
+    } else if (err.code === "too_many_pending_requests") {
+      showMessage(message, "error",
+        "The club has too many requests waiting for review. Please try again later.");
     } else if (err.code === "rate_limited") {
       showMessage(message, "error",
         "Too many requests from this network. Try again in an hour.");

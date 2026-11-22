@@ -1,10 +1,11 @@
 {
   "name": "club-frontend",
   "private": true,
-  "description": "Campus Club Management frontend (static HTML, CSS, JavaScript)",
+  "description": "Campus Club Management frontend (static HTML, CSS, JavaScript), hosted on S3 in Floci",
   "scripts": {
-    "dev": "http-server . -a 127.0.0.1 -p 5500 -c-1",
-    "config:local": "node scripts/make-local-config.mjs"
+    "config:local": "node scripts/make-local-config.mjs",
+    "deploy": "bash scripts/deploy-s3.sh",
+    "dev": "http-server . -a 127.0.0.1 -p 5500 -c-1"
   },
   "devDependencies": {
     "http-server": "^14.1.1"
