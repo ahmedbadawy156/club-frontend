@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://*.execute-api.localhost.floci.io:4566; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:,">
+  <title>Past activities · Campus Club</title>
+  <link rel="stylesheet" href="../shared/styles.css">
+  <link rel="stylesheet" href="announcements.css">
+  <script type="module" src="activities.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Past club activities</h1>
+    <p class="lead">What happened at our events, newest first.
+      Back to <a href="index.html">announcements</a>.</p>
+
+    <form id="record" class="card" novalidate hidden>
+      <h2>Record an activity</h2>
+      <p class="hint">One activity per event, for an event that has already happened.
+        Copy the event id, title and date from the event's page.</p>
+      <label>
+        Event id
+        <input type="text" name="eventId" required maxlength="36" autocomplete="off"
+               placeholder="e.g. 3f2b8c1e-0a4d-4e7b-9c2f-1d5e6a7b8c9d">
+      </label>
+      <label>
+        Event title
+        <input type="text" name="eventTitle" required minlength="3" maxlength="120" autocomplete="off">
+      </label>
+      <label>
+        Event date
+        <input type="date" name="eventDate" required>
+      </label>
+      <label>
+        What happened
+        <textarea name="summary" required minlength="10" maxlength="2000" rows="4"></textarea>
+      </label>
+      <button class="button" type="submit">Save activity</button>
+    </form>
+
+    <div id="message"></div>
+    <div id="list"></div>
+    <div class="load-more"><button class="button button-quiet" type="button" id="more" hidden>Load more</button></div>
+  </main>
+</body>
+</html>

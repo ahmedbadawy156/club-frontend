@@ -9,16 +9,55 @@
   <link rel="icon" href="data:,">
   <title>Announcements · Campus Club</title>
   <link rel="stylesheet" href="../shared/styles.css">
+  <link rel="stylesheet" href="announcements.css">
   <script type="module" src="index.js"></script>
 </head>
 <body>
   <main>
     <h1>Announcements</h1>
-    <p class="lead">News from the club officers and past club activities.</p>
-    <div class="card">
-      <p>This section is not built yet. It belongs to Mazen Mohammed Abdelfattah and will call the <code>club-announcements-service</code> API.</p>
-      <p class="muted">Placeholder page: replace it with the real pages in the <code>announcements/</code> folder.</p>
+    <p class="lead">News from the club officers. Pinned announcements come first.
+      See also <a href="activities.html">past club activities</a>.</p>
+
+    <div id="officer-tools" hidden>
+      <div class="tabs" id="views" role="group" aria-label="Which announcements">
+        <button class="tab" type="button" data-view="current" aria-pressed="true">Current</button>
+        <button class="tab" type="button" data-view="scheduled" aria-pressed="false">Scheduled</button>
+        <button class="tab" type="button" data-view="expired" aria-pressed="false">Expired</button>
+        <button class="tab" type="button" data-view="archived" aria-pressed="false">Archived</button>
+      </div>
+
+      <form id="editor" class="card" novalidate>
+        <h2 id="editor-title">New announcement</h2>
+        <label>
+          Title
+          <input type="text" name="title" required minlength="3" maxlength="120" autocomplete="off">
+        </label>
+        <label>
+          Text
+          <textarea name="body" required maxlength="2000" rows="5"></textarea>
+        </label>
+        <label class="inline">
+          <input type="checkbox" name="pinned"> Pin to the top (at most 3 pinned)
+        </label>
+        <label>
+          Publish at
+          <span class="hint">Leave empty to publish now. Can be changed only until it is published.</span>
+          <input type="datetime-local" name="publishAt">
+        </label>
+        <label>
+          Expires at
+          <span class="hint">Optional. After this time members no longer see it.</span>
+          <input type="datetime-local" name="expiresAt">
+        </label>
+        <div class="actions">
+          <button class="button" type="submit" id="editor-submit">Publish</button>
+          <button class="button button-quiet" type="button" id="editor-cancel" hidden>Cancel edit</button>
+        </div>
+      </form>
     </div>
+
+    <div id="message"></div>
+    <div id="list"></div>
   </main>
 </body>
 </html>
