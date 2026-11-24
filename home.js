@@ -52,15 +52,16 @@ if (role === "officer") {
 }
 document.getElementById("cards").replaceChildren(...cards);
 
-// Small connectivity check for the Membership service.
+// Small connectivity check for the three services.
 const status = document.getElementById("service-status");
-if (!isConfigured("membership")) {
-  status.textContent = "Membership service: not configured.";
-} else {
+const SERVICES = [["membership", "Membership"], ["events", "Events"], ["announcements", "Announcements"]];
+const results = await Promise.all(SERVICES.map(async ([service, label]) => {
+  if (!isConfigured(service)) return `${label}: not configured`;
   try {
-    const health = await api("membership", "/health", { auth: false });
-    status.textContent = `Membership service: ${health.status}.`;
+    const health = await api(service, "/health", { auth: false });
+    return `${label}: ${health.status}`;
   } catch {
-    status.textContent = "Membership service: unreachable.";
+    return `${label}: unreachable`;
   }
-}
+}));
+status.textContent = `Services: ${results.join(" · ")}.`;

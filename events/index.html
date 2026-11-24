@@ -9,16 +9,42 @@
   <link rel="icon" href="data:,">
   <title>Events · Campus Club</title>
   <link rel="stylesheet" href="../shared/styles.css">
+  <link rel="stylesheet" href="events.css">
   <script type="module" src="index.js"></script>
 </head>
 <body>
   <main>
     <h1>Events</h1>
-    <p class="lead">Upcoming and past club events, RSVPs and waitlists.</p>
-    <div class="card">
-      <p>This section is not built yet. It belongs to Ahmed Ibrahim Nassar and will call the <code>club-events-service</code> API.</p>
-      <p class="muted">Placeholder page: replace it with the real pages in the <code>events/</code> folder.</p>
+    <p class="lead">Club events. Open one to RSVP; when an event is full you join the waitlist
+      and move up automatically when someone cancels.</p>
+
+    <div class="tabs" id="views" role="group" aria-label="Which events">
+      <button class="tab" type="button" data-period="upcoming" data-status="published" aria-pressed="true">Upcoming</button>
+      <button class="tab" type="button" data-period="past" data-status="published" aria-pressed="false">Past</button>
+      <button class="tab officer-only" type="button" data-period="upcoming" data-status="draft" aria-pressed="false" hidden>Drafts</button>
+      <button class="tab officer-only" type="button" data-period="upcoming" data-status="cancelled" aria-pressed="false" hidden>Cancelled</button>
     </div>
+
+    <details id="create" class="card officer-only" hidden>
+      <summary>Create an event</summary>
+      <form id="create-form" novalidate>
+        <p class="hint">New events start as drafts. Members see them only after you publish.</p>
+        <label>Title <input type="text" name="title" required minlength="3" maxlength="120" autocomplete="off"></label>
+        <label>Description <textarea name="description" maxlength="2000" rows="3"></textarea></label>
+        <label>Starts at <input type="datetime-local" name="startsAt" required></label>
+        <label>Location <input type="text" name="location" required minlength="2" maxlength="200"></label>
+        <label>Capacity <input type="number" name="capacity" required min="1" max="1000" step="1" value="20"></label>
+        <label class="inline"><input type="checkbox" name="isOutdoor"> Outdoor event (shows a weather forecast)</label>
+        <div class="coords" hidden>
+          <label>Latitude <input type="number" name="latitude" min="-90" max="90" step="any" placeholder="30.0444"></label>
+          <label>Longitude <input type="number" name="longitude" min="-180" max="180" step="any" placeholder="31.2357"></label>
+        </div>
+        <button class="button" type="submit">Create draft</button>
+      </form>
+    </details>
+
+    <div id="message"></div>
+    <div id="list" class="event-list"></div>
   </main>
 </body>
 </html>

@@ -16,9 +16,8 @@ It calls three backend services, each in its own repository:
 Each member commits only the pages in their own folder. Changes to
 `shared/` are reviewed by the team because every page uses it.
 
-> **Status:** works on Floci against the Membership service (Express on
-> Lambda behind API Gateway). Events and Announcements are placeholder pages.
-> Nothing is deployed to real AWS.
+> **Status:** works on Floci against all three services (each an Express app
+> on Lambda behind API Gateway). Nothing is deployed to real AWS.
 
 ## Pages
 
@@ -30,8 +29,10 @@ Each member commits only the pages in their own folder. Changes to
 | `membership/requests.html` | Officers | Approve or reject requests |
 | `membership/members.html` | Officers | Search members, change roles |
 | `membership/audit.html` | Officers | Read the audit log |
-| `events/index.html` | Placeholder | To be built by the Events owner |
-| `announcements/index.html` | Placeholder | To be built by the Announcements owner |
+| `events/index.html` | Members, officers | Upcoming and past events; officers also see drafts and cancelled events and create events |
+| `events/event.html` | Members, officers | Event details, RSVP or join the waitlist, cancel own RSVP, Open-Meteo forecast; officers edit, publish, cancel and see sign-ups |
+| `announcements/index.html` | Members, officers | Current announcements, pinned first; officers publish, schedule, pin, edit and archive |
+| `announcements/activities.html` | Members, officers | Past club activities; officers record one per finished event (pre-filled from a past event page) |
 
 ## Shared code (`shared/`)
 
@@ -98,15 +99,17 @@ npm run deploy
 Then open http://localhost:4566/club-web/index.html (use `localhost`, not
 `127.0.0.1`: the API only allows the origin `http://localhost:4566`).
 
-`npm run deploy` generates `shared/config.local.js` from the Membership
-deployment (Git ignores it, because each Floci deployment has its own API
-id), creates the bucket `club-web` if needed, and uploads only the HTML, CSS
-and JS files with the right content types.
+`npm run deploy` generates `shared/config.local.js` from each service's
+`infra/out/api.env` (Membership is required; Events and Announcements are
+added when deployed; Git ignores the file, because each Floci deployment has
+its own API id), creates the bucket `club-web` if needed, and uploads only
+the HTML, CSS and JS files with the right content types and `no-cache`, so a
+new deploy shows up on the next page load.
 
-When the Events and Announcements services are deployed, add their API
-addresses in `scripts/make-local-config.mjs`, their routes' CORS must allow
-`http://localhost:4566`, and the pages' CSP already allows their API Gateway
-addresses on Floci.
+Deploy the services first, in this order: Membership, then Events and
+Announcements (they need Membership's public key). The repositories must sit
+side by side in one folder, because the config script reads
+`../club-<service>-service/infra/out/api.env`.
 
 ## Known limits
 

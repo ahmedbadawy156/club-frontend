@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://*.execute-api.localhost.floci.io:4566; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:,">
+  <title>Event · Campus Club</title>
+  <link rel="stylesheet" href="../shared/styles.css">
+  <link rel="stylesheet" href="events.css">
+  <script type="module" src="event.js"></script>
+</head>
+<body>
+  <main>
+    <p><a href="index.html">← All events</a></p>
+    <div id="message"></div>
+
+    <article class="card" id="event" hidden>
+      <h1 id="title"></h1>
+      <p class="event-meta" id="meta"></p>
+      <p class="description" id="description"></p>
+      <p class="seats" id="seats"></p>
+      <div id="rsvp"></div>
+    </article>
+
+    <section class="card" id="weather-card" hidden>
+      <h2>Weather forecast</h2>
+      <div id="weather"></div>
+    </section>
+
+    <section class="officer-only" hidden>
+      <div class="card">
+        <h2>Officer actions</h2>
+        <div class="actions" id="status-actions"></div>
+      </div>
+
+      <details class="card" id="edit">
+        <summary>Edit details</summary>
+        <form id="edit-form" novalidate>
+          <label>Title <input type="text" name="title" required minlength="3" maxlength="120" autocomplete="off"></label>
+          <label>Description <textarea name="description" maxlength="2000" rows="3"></textarea></label>
+          <label>Starts at <input type="datetime-local" name="startsAt" required></label>
+          <label>Location <input type="text" name="location" required minlength="2" maxlength="200"></label>
+          <label>Capacity
+            <span class="hint">Cannot go below the confirmed seats. Raising it moves people up from the waitlist.</span>
+            <input type="number" name="capacity" required min="1" max="1000" step="1">
+          </label>
+          <label class="inline"><input type="checkbox" name="isOutdoor"> Outdoor event</label>
+          <div class="coords">
+            <label>Latitude <input type="number" name="latitude" min="-90" max="90" step="any"></label>
+            <label>Longitude <input type="number" name="longitude" min="-180" max="180" step="any"></label>
+          </div>
+          <button class="button" type="submit">Save changes</button>
+        </form>
+      </details>
+
+      <div class="card">
+        <h2>Sign-ups</h2>
+        <div class="grid-2" id="signups"></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

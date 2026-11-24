@@ -63,6 +63,15 @@ if (session) {
     form.hidden = false;
     form.eventDate.max = new Date().toISOString().slice(0, 10);
 
+    // Pre-filled when an officer comes from a past event's page in Events.
+    const params = new URLSearchParams(location.search);
+    if (params.get("eventId")) {
+      form.eventId.value = params.get("eventId").slice(0, 36);
+      form.eventTitle.value = (params.get("eventTitle") || "").slice(0, 120);
+      form.eventDate.value = (params.get("eventDate") || "").slice(0, 10);
+      form.summary.focus();
+    }
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearMessage(message);

@@ -7,6 +7,8 @@
 # browsers refuse JavaScript modules served with the wrong type. The bucket is
 # readable by anyone who can reach Floci, so it must never hold secrets; the
 # site holds none (no keys, only API addresses).
+# "no-cache" makes browsers check for a newer file on every load, so a new
+# deploy shows up at once.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -27,8 +29,12 @@ echo "== 2/3 Bucket $BUCKET"
 echo "== 3/3 Upload site files"
 EXCLUDES=(--exclude "*" --exclude "node_modules/*" --exclude "scripts/*" --exclude ".git/*")
 upload() { # PATTERN CONTENT_TYPE
+  # sync removes files deleted from the repository; cp then uploads every file
+  # again so each one gets the content type and "no-cache" header.
   "$AWS" s3 sync . "s3://$BUCKET" "${EXCLUDES[@]}" --include "$1" --exclude "node_modules/*" \
-    --exclude "scripts/*" --content-type "$2" --delete --only-show-errors
+    --exclude "scripts/*" --content-type "$2" --cache-control "no-cache" --delete --only-show-errors
+  "$AWS" s3 cp . "s3://$BUCKET" --recursive "${EXCLUDES[@]}" --include "$1" --exclude "node_modules/*" \
+    --exclude "scripts/*" --content-type "$2" --cache-control "no-cache" --only-show-errors
 }
 upload "*.html" "text/html; charset=utf-8"
 upload "*.css"  "text/css; charset=utf-8"
