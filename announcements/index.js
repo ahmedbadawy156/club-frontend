@@ -6,7 +6,7 @@
 // the officer tools here are only shown to officers for convenience.
 
 import { api } from "../shared/api.js";
-import { requireRole } from "../shared/auth.js";
+import { pageUrl, requireRole } from "../shared/auth.js";
 import {
   clearMessage, el, errorText, formatDate, redirectOnAuthError, renderHeader, showMessage,
 } from "../shared/ui.js";
@@ -90,6 +90,7 @@ if (session) {
     const title = el("h2", { text: a.title });
     if (a.pinned) title.append(badge("Pinned", "pinned"));
     if (a.state !== "current") title.append(badge(a.state, a.state));
+    if (a.origin === "events") title.append(badge("Automatic", "auto"));
 
     const meta = [`By ${a.authorName || "an officer"}`, a.state === "scheduled"
       ? `publishes ${formatDate(a.publishAt)}`
@@ -100,6 +101,10 @@ if (session) {
       title,
       el("p", { className: "post-meta", text: meta.join(" · ") }),
       el("p", { className: "post-body", text: a.body }),
+      // Posted from the Events service: link to the event itself.
+      a.origin === "events" && a.eventId
+        ? el("p", {}, [el("a", { text: "View the event", attrs: { href: pageUrl(`events/event.html?id=${encodeURIComponent(a.eventId)}`) } })])
+        : null,
       officerActions(a),
     ]);
   }

@@ -51,6 +51,10 @@ label.inline {
   background: #fff3c4;
 }
 
+.badge-auto {
+  background: #e7f5ec;
+}
+
 .badge-scheduled {
   background: #dbeafe;
 }

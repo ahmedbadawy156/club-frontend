@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://*.execute-api.localhost.floci.io:4566; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:,">
+  <title>Notifications · Campus Club</title>
+  <link rel="stylesheet" href="../shared/styles.css">
+  <script type="module" src="notifications.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Notifications</h1>
+    <p class="lead">A seat freed up for you, an event you signed up for was cancelled, or your membership changed. Newest first; notices are kept for 60 days.</p>
+
+    <div id="message"></div>
+    <ul class="notice-list" id="list"></ul>
+  </main>
+</body>
+</html>

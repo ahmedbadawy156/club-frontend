@@ -29,9 +29,10 @@ Each member commits only the pages in their own folder. Changes to
 | `membership/requests.html` | Officers | Approve or reject requests |
 | `membership/members.html` | Officers | Search members, change roles |
 | `membership/audit.html` | Officers | Read the audit log |
+| `membership/notifications.html` | Members, officers | Your notices (seat freed up, event cancelled, approval, role change); opening the page marks them read. The header shows the unread count on every page |
 | `events/index.html` | Members, officers | Upcoming and past events; officers also see drafts and cancelled events and create events |
 | `events/event.html` | Members, officers | Event details, RSVP or join the waitlist, cancel own RSVP, Open-Meteo forecast; officers edit, publish, cancel and see sign-ups |
-| `announcements/index.html` | Members, officers | Current announcements, pinned first; officers publish, schedule, pin, edit and archive |
+| `announcements/index.html` | Members, officers | Current announcements, pinned first; officers publish, schedule, pin, edit and archive. Posts made automatically from Events carry an "Automatic" badge and a link to the event |
 | `announcements/activities.html` | Members, officers | Past club activities; officers record one per finished event (pre-filled from a past event page) |
 
 ## Shared code (`shared/`)

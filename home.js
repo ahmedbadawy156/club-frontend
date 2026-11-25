@@ -38,6 +38,10 @@ if (!session) {
     "Already approved? Sign in to see events and announcements.",
     "membership/login.html", "Sign in"));
 }
+if (session) {
+  cards.push(card("Notifications", "Seats freed up, cancelled events and changes to your membership.",
+    "membership/notifications.html", "Open notifications"));
+}
 cards.push(card("Events", "Upcoming and past club events.",
   "events/index.html", "View events"));
 cards.push(card("Announcements", "News from the club officers.",

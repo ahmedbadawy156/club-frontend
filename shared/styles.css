@@ -81,6 +81,34 @@ a:hover { color: var(--accent-dark); }
 
 .account-name { color: var(--muted); font-size: 0.95rem; }
 
+.notices-link { font-size: 0.95rem; text-decoration: none; }
+.notices-count {
+  display: inline-block;
+  min-width: 1.4rem;
+  margin-left: 0.3rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* ---------- notifications page ---------- */
+
+.notice-list { list-style: none; margin: 0; padding: 0; }
+.notice {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.6rem;
+}
+.notice-unread { border-left: 4px solid var(--accent); }
+.notice h2 { font-size: 1.05rem; margin: 0 0 0.25rem; }
+.notice p { margin: 0 0 0.35rem; overflow-wrap: anywhere; }
+.notice-time { color: var(--muted); font-size: 0.85rem; }
+
 /* ---------- layout ---------- */
 
 main {

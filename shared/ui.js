@@ -2,6 +2,8 @@
 // textContent, never innerHTML, so it cannot run as script.
 
 import { getSession, pageUrl, signOut } from "./auth.js";
+import { api } from "./api.js";
+import { isConfigured } from "./config.js";
 
 // Create an element: el("p", { text: "Hi", className: "note" }, [children])
 export function el(tag, options = {}, children = []) {
@@ -78,6 +80,25 @@ export function formatDate(value) {
   return Number.isNaN(date.getTime()) ? "" : date.toLocaleString();
 }
 
+// Unread count next to the Notifications link (Membership service). Quietly
+// does nothing when the service cannot be reached.
+export async function refreshUnreadCount(link = document.querySelector(".notices-link")) {
+  if (!link || !isConfigured("membership")) return;
+  try {
+    const data = await api("membership", "/notifications", { query: { limit: 1 } });
+    link.querySelector(".notices-count")?.remove();
+    if (data.unreadCount > 0) {
+      link.append(el("span", {
+        text: data.unreadCount > 99 ? "99+" : String(data.unreadCount),
+        className: "notices-count",
+        attrs: { "aria-label": `${data.unreadCount} unread` },
+      }));
+    }
+  } catch {
+    // The header still works without the count.
+  }
+}
+
 // Site header with links for the current role and a sign-out button.
 export function renderHeader() {
   const session = getSession();
@@ -105,13 +126,20 @@ export function renderHeader() {
       await signOut();
       location.assign(pageUrl("index.html"));
     });
+    const bell = el("a", {
+      text: "Notifications",
+      className: "notices-link",
+      attrs: { href: pageUrl("membership/notifications.html") },
+    });
     account.append(
+      bell,
       el("span", {
         text: `${session.user.fullName} (${role})`,
         className: "account-name",
       }),
       signOutButton,
     );
+    refreshUnreadCount(bell);
   } else {
     account.append(
       link("membership/join.html", "Join"),
